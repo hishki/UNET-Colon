@@ -19,7 +19,7 @@ def train(model, train_loader, opt, criterion, epoch):
     model.train()
     num_batches = 0
     avg_loss = 0
-    with open('logs.txt', 'a') as file:
+    with open('train_loss.txt', 'a') as file:
         for batch_idx, sample_batched in enumerate(train_loader):
             data = sample_batched['image']
             target = sample_batched['mask']
@@ -30,7 +30,7 @@ def train(model, train_loader, opt, criterion, epoch):
             loss = criterion(output, target)
             loss.backward()
             optimizer.step()
-            avg_loss += loss.data[0]
+            avg_loss += loss.data.item()
             num_batches += 1
         avg_loss /= num_batches
         # avg_loss /= len(train_loader.dataset)
@@ -41,7 +41,7 @@ def val(model, val_loader, opt, criterion, epoch):
     model.eval()
     num_batches = 0
     avg_loss = 0
-    with open('logs.txt', 'a') as file:
+    with open('validation_loss.txt', 'a') as file:
         for batch_idx, sample_batched in enumerate(val_loader):
             data = sample_batched['image']
             target = sample_batched['mask']
@@ -49,7 +49,7 @@ def val(model, val_loader, opt, criterion, epoch):
             output = model.forward(data)
             # output = (output > 0.5).type(opt.dtype)	# use more gpu memory, also, loss does not change if use this line
             loss = criterion(output, target)
-            avg_loss += loss.data[0]
+            avg_loss += loss.data.item()
             num_batches += 1
         avg_loss /= num_batches
         # avg_loss /= len(val_loader.dataset)
@@ -64,9 +64,10 @@ def run(model, train_loader, val_loader, opt, criterion):
         val(model, val_loader, opt, criterion, epoch)
 
 # only train
-def run_train(model, train_loader, opt, criterion):
+def run_train(model, train_loader, val_loader, opt, criterion):
     for epoch in range(1, opt.epochs):
         train(model, train_loader, opt, criterion, epoch)
+        val(model, val_loader, opt, criterion, epoch)
 
 # make prediction
 def run_test(model, test_loader, opt):
@@ -129,7 +130,7 @@ if __name__ == '__main__':
         optimizer = optim.Adam(model.parameters(), lr=opt.learning_rate, weight_decay=opt.weight_decay)
         criterion = nn.BCELoss().cuda()
         # start to run a training
-        run_train(model, train_loader, opt, criterion)
+        run_train(model, train_loader, val_loader, opt, criterion)
         # make prediction on validation set
         predictions, img_ids = run_test(model, val_loader, opt)
         # compute IOU between prediction and ground truth masks
