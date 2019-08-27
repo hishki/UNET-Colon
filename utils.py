@@ -59,13 +59,13 @@ class Option(Config):
     name = "DSB2018"
 
     # root dir of training and validation set
-    root_dir = '/Users/mahdi/software/Colon_Mask_RCNN/mrcnn/dataset/new_crypts/train/combined'
+    root_dir = './dataset/combined'
 
     # root dir of testing set
-    test_dir = '/Users/mahdi/software/Colon_Mask_RCNN/mrcnn/dataset/new_crypts/valid/testing_data'
+    test_dir = './dataset/testing_data'
 
     # save segmenting results (prediction masks) to this folder
-    results_dir = '/Users/mahdi/software/Colon_Mask_RCNN/mrcnn/dataset/new_crypts/results'
+    results_dir = './dataset/results'
 
     num_workers = 1     	# number of threads for data loading
     shuffle = True      	# shuffle the data set
@@ -226,10 +226,10 @@ if __name__ == '__main__':
     """ Prepare training data and testing data
     read data and overlay masks and save to destination path
     """
-    stage1_train_src = '/Users/mahdi/software/Colon_Mask_RCNN/mrcnn/dataset/new_crypts/train'
-    stage1_train_dest = '/Users/mahdi/software/Colon_Mask_RCNN/mrcnn/dataset/new_crypts/train/combined'
-    stage1_test_src = '/Users/mahdi/software/Colon_Mask_RCNN/mrcnn/dataset/new_crypts/valid'
-    stage1_test_dest = '/Users/mahdi/software/Colon_Mask_RCNN/mrcnn/dataset/new_crypts/valid/testing_data'
+    stage1_train_src = '/home/vedula/data/train'
+    stage1_train_dest = './dataset/combined'
+    stage1_test_src = '/home/vedula/data/valid'
+    stage1_test_dest = './dataset/testing_data'
 
     util = Utils(stage1_train_src, stage1_train_dest, stage1_test_src, stage1_test_dest)
     util.prepare_training_data()
